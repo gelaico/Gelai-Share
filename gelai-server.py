@@ -3,15 +3,6 @@ from socket import *
 import os
 import random
 
-#server setup
-port = 10000
-port = port + random.randint(0,255)
-print("port #: " + str(port))
-serverSocket = socket(AF_INET, SOCK_STREAM)
-serverSocket.bind( ('', port) )
-serverSocket.listen()
-print('**Server up and listening on port: ', port)
-
 def file_to_byte(string):
     try:
         f = open("repo/"+ string)
@@ -26,6 +17,24 @@ def to_byte(inty, size, which = 0):
         return inty.to_bytes(size,'little')
     return inty.to_bytes(size,'big')
 
+#server setup
+port = 10000
+port = port + random.randint(0,9999)
+serverSocket = socket(AF_INET, SOCK_STREAM)
+serverSocket.bind( ('', port) )
+if not os.path.isdir("repo"):
+    os.makedirs("repo")
+listy = os.listdir("repo")
+numbFile = len(listy)
+if len(listy) == 0:
+    print("no files to host: ")
+    serverSocket.close()
+    quit()
+
+serverSocket.listen()
+print('**Server up and listening on port: ', port)
+
+
 
 try:
 
@@ -37,11 +46,6 @@ try:
         
         #list repo files
         #save number of files
-        if not os.path.isdir("repo"):
-            os.makedirs("repo")
-        listy = os.listdir("repo")
-        numbFile = len(listy)
-
         x = 0
         numbFileB = to_byte(numbFile,4)
         clientConn.send(numbFileB)
