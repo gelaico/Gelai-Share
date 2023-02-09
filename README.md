@@ -1,4 +1,4 @@
-# gelai-sharing
+# Gelai-Share
 Peer to Peer file sharing application. Use via command line
 Host files to share in home branch /repo
 
