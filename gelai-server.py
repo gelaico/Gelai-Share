@@ -45,48 +45,53 @@ print('**Server up and listening on port: ', port)
 
 #Closes with Control C
 try:
-    
-    #accept clients until closed
-    while True:
+    try:
 
-        # wait for client to connect, then establish socket
-        clientConn, clientAddr = serverSocket.accept()
-        
-        #list repo files
-        #save number of files
-        x = 0
-        numbFileB = to_byte(numbFile,4)
-        
-        #Sends the number of files to the client
-        clientConn.send(numbFileB)
-        
-        #send file names prefixed by their length
-        while x < numbFile:
-            msg = listy[x]
-            intvar = len(msg.encode())
-            byte = to_byte(intvar,4)
-            clientConn.send(byte)
-            clientConn.send(msg.encode())
-            x = x + 1
+        #accept clients until closed
+        while True:
 
-        #send file names prefixed by their length
-        #send if the file exists
-        fileIndex = clientConn.recv(4)
-        fileIndex = int.from_bytes(fileIndex,"little")
-        msg = listy[fileIndex]
-        file_byte = file_to_byte(msg).encode()
+            # wait for client to connect, then establish socket
+            clientConn, clientAddr = serverSocket.accept()
         
-        #sends the file if it exists
-        if file_byte != -1:
-            length = to_byte(len(file_byte),4)
-            clientConn.send(length)
-            clientConn.send(file_byte)
+            #list repo files
+            #save number of files
+            x = 0
+            numbFileB = to_byte(numbFile,4)
+        
+            #Sends the number of files to the client
+            clientConn.send(numbFileB)
+        
+            #send file names prefixed by their length
+            while x < numbFile:
+                msg = listy[x]
+                intvar = len(msg.encode())
+                byte = to_byte(intvar,4)
+                clientConn.send(byte)
+                clientConn.send(msg.encode())
+                x = x + 1
 
-        #write to log file what has been requested
-        flog = open(".gelai_log","a")
-        flog.write(str(clientAddr[0]) + " " + listy[fileIndex] +"\n")
-        flog.close()
+            #send file names prefixed by their length
+            #send if the file exists
+            fileIndex = clientConn.recv(4)
+            fileIndex = int.from_bytes(fileIndex,"little")
+            msg = listy[fileIndex]
+            file_byte = file_to_byte(msg).encode()
+        
+            #sends the file if it exists
+            if file_byte != -1:
+                length = to_byte(len(file_byte),4)
+                clientConn.send(length)
+                clientConn.send(file_byte)
+
+            #write to log file what has been requested
+            flog = open(".gelai_log","a")
+            flog.write(str(clientAddr[0]) + " " + listy[fileIndex] +"\n")
+            flog.close()
+            clientConn.close()
+
+    except BrokenPipeError:
         clientConn.close()
+
 
 except KeyboardInterrupt:
     serverSocket.close()
