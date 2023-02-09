@@ -1,12 +1,12 @@
-#Prog: Elaine George + Dalton Glenn
-#Purpose: File Sharing Client
+#Programmer: Elaine George + Dalton Glenn
 #Date: 02/06/23
+#Purpose: File Sharing Client to operate with gelai-server.py
 
 from socket import *
 import sys
 import os
 
-
+#Simple helper functions
 def to_byte(inty, size, which = 0):
     if which == 0:
         return inty.to_bytes(size,'little')
@@ -21,8 +21,8 @@ def file_to_byte(string):
     except:
         return -1
 
+#Requires ip address and port
 try:
-    print("Control C to Quit")
     try:
         #server connection setup
         serverID = sys.argv[1]
@@ -43,7 +43,7 @@ try:
             listy.append(fileName)
             print("["+ str(x) + "]" + " " + fileName)
             x = x + 1
-        
+    
         #Allows user to choose the file
         #sends that index
         file_index = int(input("Enter File Index: "))
@@ -66,21 +66,23 @@ try:
             a = int((lengthy/fileLengthi)*10)
 
             stra = int((lengthy/fileLengthi)*10)*"⬛"
+            #progress bar
             if(len(stra)>0 and len(stra)<10 ):
                 print(" "+str(a*10)+"% : "+ stra+ (10-len(stra))*"⬜")
 
+        #creates repo directory if it doesn't exist
         if not os.path.isdir("repo"):
             os.makedirs("repo")
+    
+        #writes entire file
         f = open("repo/"+ fileName,"w")
         f.write(file)
         f.close()
         clientSocket.close()
         print("File Written...")
         print("Connection Closed")
-    #allows closing prematurely
     except KeyboardInterrupt:
         clientSocket.close()
-        print("\nConnection Closed")
 
 except IndexError:
     print("Ip address and Port needed")
