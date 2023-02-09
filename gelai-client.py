@@ -1,6 +1,7 @@
-#Prog: Elaine George + Dalton Glenn
-#Purpose: File Sharing Client
+#Programmer: Elaine George + Dalton Glenn
 #Date: 02/06/23
+#Purpose: File Sharing Client to operate with gelai-server.py
+
 from socket import *
 import sys
 import os
